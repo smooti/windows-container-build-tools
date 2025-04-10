@@ -2,11 +2,25 @@ This container should contain all utilities needed when building software. This 
 
 ## Build
 
-The following command will build the container image using 2GB of memory
+The following command will build the container image using 4GB of memory
 
 ```bash
-docker build -t buildtools:latest -m 2GB .
+docker build -t buildtools:latest -m 4GB .
 ```
+
+---
+
+**Note**
+
+The build may take a while as the following workloads and components are big in size...
+
+- Microsoft.VisualStudio.Workload.UniversalBuildTools
+- Microsoft.VisualStudio.ComponentGroup.VC.Tools.142.x86.x64
+- Microsoft.VisualStudio.ComponentGroup.UWP.VC.BuildTools
+- Microsoft.VisualStudio.ComponentGroup.UWP.VC.v141.BuildTools
+- Microsoft.VisualStudio.ComponentGroup.UWP.VC.v142.BuildTools
+
+---
 
 ## Troubleshooting Windows and Build Tools containers
 
