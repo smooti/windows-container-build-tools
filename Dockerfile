@@ -19,7 +19,7 @@ RUN `
 		--installPath "%ProgramFiles(x86)%\Microsoft Visual Studio\2022\BuildTools" `
 		--add Microsoft.VisualStudio.Workload.ManagedDesktopBuildTools `
 		--add Microsoft.VisualStudio.Workload.VCTools `
-		# --add Microsoft.VisualStudio.Workload.UniversalBuildTools `
+		--add Microsoft.VisualStudio.Workload.UniversalBuildTools `
 		|| IF "%ERRORLEVEL%"=="3010" EXIT 0)
 
 RUN `
