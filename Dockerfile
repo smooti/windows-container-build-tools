@@ -3,28 +3,48 @@
 # https://docs.docker.com/reference/dockerfile/#escape
 
 
-# Use the latest Windows Server 2022 image.
+# Use the latest Windows Server 2022 image
 FROM mcr.microsoft.com/windows/server:ltsc2022
 
-# Restore the default Windows shell for correct batch processing.
+# Restore the default Windows shell for correct batch processing
 SHELL ["cmd", "/S", "/C"]
 
 RUN `
-    # Download the Build Tools bootstrapper.
-    curl -SL --output vs_buildtools.exe https://aka.ms/vs/17/release/vs_buildtools.exe `
-    `
-    # Install Build Tools with the Microsoft.VisualStudio.Workload.AzureBuildTools workload, excluding workloads and components with known issues.
-    && (start /w vs_buildtools.exe --quiet --wait --norestart --nocache `
-        --installPath "%ProgramFiles(x86)%\Microsoft Visual Studio\2022\BuildTools" `
-        --add Microsoft.VisualStudio.Workload.AzureBuildTools `
-        --remove Microsoft.VisualStudio.Component.Windows10SDK.10240 `
-        --remove Microsoft.VisualStudio.Component.Windows10SDK.10586 `
-        --remove Microsoft.VisualStudio.Component.Windows10SDK.14393 `
-        --remove Microsoft.VisualStudio.Component.Windows81SDK `
-        || IF "%ERRORLEVEL%"=="3010" EXIT 0) `
-    `
-    # Cleanup
-    && del /q vs_buildtools.exe
+	# Download the Build Tools bootstrapper
+	curl -SL --output vs_buildtools.exe https://aka.ms/vs/17/release/vs_buildtools.exe
+
+RUN `
+	# Install Visual Studio workloads
+	(start /w vs_buildtools.exe --quiet --wait --norestart --nocache `
+		--installPath "%ProgramFiles(x86)%\Microsoft Visual Studio\2022\BuildTools" `
+		--add Microsoft.VisualStudio.Workload.ManagedDesktopBuildTools `
+		--add Microsoft.VisualStudio.Workload.VCTools `
+		# --add Microsoft.VisualStudio.Workload.UniversalBuildTools `
+		|| IF "%ERRORLEVEL%"=="3010" EXIT 0)
+
+RUN `
+	# Install Visual Studio components
+	(start /w vs_buildtools.exe --quiet --wait --norestart --nocache `
+		--installPath "%ProgramFiles(x86)%\Microsoft Visual Studio\2022\BuildTools" `
+		--add Microsoft.VisualStudio.Component.VC.ATLMFC `
+		--add Microsoft.VisualStudio.Component.VC.CLI.Support `
+		--add Microsoft.VisualStudio.Component.VC.140 `
+		--add Microsoft.VisualStudio.Component.VC.v141.x86.x64 `
+		--add Microsoft.VisualStudio.Component.VC.v141.CLI.Support `
+		--add Microsoft.VisualStudio.Component.VC.v141.ATL `
+		--add Microsoft.VisualStudio.Component.VC.v141.MFC `
+		--add Microsoft.VisualStudio.Component.VC.14.29.16.11.CLI.Support `
+		--add Microsoft.VisualStudio.Component.VC.14.29.16.11.ATL `
+		--add Microsoft.VisualStudio.Component.VC.14.29.16.11.MFC `
+		--add Microsoft.VisualStudio.ComponentGroup.VC.Tools.142.x86.x64 `
+		--add Microsoft.VisualStudio.ComponentGroup.UWP.VC.BuildTools `
+		--add Microsoft.VisualStudio.ComponentGroup.UWP.VC.v141.BuildTools `
+		--add Microsoft.VisualStudio.ComponentGroup.UWP.VC.v142.BuildTools `
+		|| IF "%ERRORLEVEL%"=="3010" EXIT 0)
+
+RUN `
+	# Cleanup
+	del /q vs_buildtools.exe
 
 # Define the entry point for the docker container.
 # This entry point starts the developer command prompt and launches the PowerShell shell.
