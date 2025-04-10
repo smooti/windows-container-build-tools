@@ -6,9 +6,6 @@
 Write-Host 'Set TLS1.2'
 [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor 'Tls12'
 
-Write-Host 'Set execution policy to bypass (Just for this process)'
-Set-ExecutionPolicy Bypass -Scope Process -Force
-
 Write-Host 'Install Chocolatey'
 Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
 
