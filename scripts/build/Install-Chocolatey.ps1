@@ -3,24 +3,14 @@
 ##  Desc:  Install Chocolatey package manager
 ################################################################################
 
-Write-Host "Set TLS1.2"
-[Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor "Tls12"
+Write-Host 'Set TLS1.2'
+[Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor 'Tls12'
 
-Write-Host "Install chocolatey"
+Write-Host 'Set execution policy to bypass (Just for this process)'
+Set-ExecutionPolicy Bypass -Scope Process -Force
 
-# # Add to system PATH
-# Add-MachinePathItem 'C:\ProgramData\Chocolatey\bin'
-# Update-Environment
-
-# Verify and run choco installer
-$signatureThumbprint = "B009C875F4E10FFBC62B785BAF4FC4D6BC2D5711"
-$installScriptPath = Invoke-DownloadWithRetry 'https://chocolatey.org/install.ps1'
-Test-FileSignature -Path $installScriptPath -ExpectedThumbprint $signatureThumbprint
-Invoke-Expression $installScriptPath
+Write-Host 'Install Chocolatey'
+Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
 
 # Turn off confirmation
 choco feature enable -n allowGlobalConfirmation
-
-# Initialize environmental variable ChocolateyToolsLocation by invoking choco Get-ToolsLocation function
-Import-Module "$env:ChocolateyInstall\helpers\chocolateyInstaller.psm1" -Force
-Get-ToolsLocation
