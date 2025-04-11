@@ -9,6 +9,12 @@ FROM mcr.microsoft.com/windows/server:ltsc2022
 # Restore the default Windows shell for correct batch processing
 SHELL ["cmd", "/S", "/C"]
 
+COPY scripts/build C:\scripts\build
+
+RUN `
+	powershell -File C:\scripts\build\Install-Chocolatey.ps1 `
+	&& powershell -File C:\scripts\build\Install-ChocolateyPackages.ps1
+
 RUN `
 	# Download the Build Tools bootstrapper
 	echo 'Downloading Build Tools bootstrapper...' `
