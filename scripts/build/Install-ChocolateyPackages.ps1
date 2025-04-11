@@ -1,7 +1,4 @@
-################################################################################
-##  File:  Install-ChocolateyPackages.ps1
-##  Desc:  Install Chocolatey packages
-################################################################################
+# Install Chocolatey packages
 
 $chocolateyPackages = @(
 	@{ name = '7zip.install' },

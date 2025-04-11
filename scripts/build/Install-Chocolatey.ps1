@@ -1,7 +1,4 @@
-################################################################################
-##  File:  Install-Chocolatey.ps1
-##  Desc:  Install Chocolatey package manager
-################################################################################
+# Install Chocolatey package manager
 
 Write-Host 'Set TLS1.2'
 [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor 'Tls12'
