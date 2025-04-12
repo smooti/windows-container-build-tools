@@ -36,6 +36,7 @@ function Install-ChocoPackage {
 
 	$count = 1
 	while ($true) {
+		# Install chocolatey package
 		Write-Host "Running [#$count]: choco install $packageName -y $argumentList"
 		if ($Version) {
 			choco install $packageName --version $Version -y @ArgumentList --no-progress --require-checksums
@@ -43,6 +44,8 @@ function Install-ChocoPackage {
 		else {
 			choco install $packageName -y @ArgumentList --no-progress --require-checksums
 		}
+
+		# Check if package installed successfully
 		$pkg = choco list --localonly $packageName --exact --all --limitoutput
 		if ($pkg) {
 			Write-Host "Package installed: $pkg"
