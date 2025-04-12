@@ -9,7 +9,7 @@ FROM mcr.microsoft.com/windows/server:ltsc2022
 # Restore the default Windows shell for correct batch processing
 SHELL ["cmd", "/S", "/C"]
 
-COPY scripts/build C:\scripts\build
+COPY scripts/ C:\scripts\
 
 RUN `
 	powershell -File C:\scripts\build\Install-Chocolatey.ps1 `
