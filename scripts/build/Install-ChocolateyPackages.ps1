@@ -34,29 +34,27 @@ function Install-ChocoPackage {
 		[int] $RetryCount = 5
 	)
 
-	process {
-		$count = 1
-		while ($true) {
-			Write-Host "Running [#$count]: choco install $packageName -y $argumentList"
-			if ($Version) {
-				choco install $packageName --version $Version -y @ArgumentList --no-progress --require-checksums
+	$count = 1
+	while ($true) {
+		Write-Host "Running [#$count]: choco install $packageName -y $argumentList"
+		if ($Version) {
+			choco install $packageName --version $Version -y @ArgumentList --no-progress --require-checksums
+		}
+		else {
+			choco install $packageName -y @ArgumentList --no-progress --require-checksums
+		}
+		$pkg = choco list --localonly $packageName --exact --all --limitoutput
+		if ($pkg) {
+			Write-Host "Package installed: $pkg"
+			break
+		}
+		else {
+			$count++
+			if ($count -ge $retryCount) {
+				Write-Host "Could not install $packageName after $count attempts"
+				exit 1
 			}
-			else {
-				choco install $packageName -y @ArgumentList --no-progress --require-checksums
-			}
-			$pkg = choco list --localonly $packageName --exact --all --limitoutput
-			if ($pkg) {
-				Write-Host "Package installed: $pkg"
-				break
-			}
-			else {
-				$count++
-				if ($count -ge $retryCount) {
-					Write-Host "Could not install $packageName after $count attempts"
-					exit 1
-				}
-				Start-Sleep -Seconds 30
-			}
+			Start-Sleep -Seconds 30
 		}
 	}
 }
