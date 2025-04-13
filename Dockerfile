@@ -2,18 +2,22 @@
 # ^^ The above is set to prevent issues with Windows paths containing backslashes
 # https://docs.docker.com/reference/dockerfile/#escape
 
-
 # Use the latest Windows Server 2022 image
 FROM mcr.microsoft.com/windows/server:ltsc2022
 
 # Restore the default Windows shell for correct batch processing
 SHELL ["cmd", "/S", "/C"]
 
-COPY scripts/ C:\scripts\
+COPY scripts/ C:\staging\scripts
 
+# Place scripts in a known location and run them
+# Move helper scripts to the default PowerShell module location for autoloading
 RUN `
-	powershell -File C:\scripts\build\Install-Chocolatey.ps1 `
-	&& powershell -File C:\scripts\build\Install-ChocolateyPackages.ps1
+	mkdir C:\scripts && `
+  move C:\staging\scripts\build C:\scripts\build && `
+  move C:\staging\scripts\helpers "C:\Program Files\WindowsPowerShell\Modules\helpers" && `
+	powershell -File C:\scripts\build\Install-Chocolatey.ps1 &&`
+	powershell -File C:\scripts\build\Install-ChocolateyPackages.ps1
 
 RUN `
 	# Download the Build Tools bootstrapper
